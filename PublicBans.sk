@@ -1,8 +1,28 @@
 # skript by nenderson#0001 it will kick every person on join who is on the "banned" list that can be found on the github: https://github.com/nenderson/SkriptPublicBans
 # you have to get skUtilities from https://forums.skunity.com/resources/skutilities.26/
 options:
-    banlist: ""
+    banlist: "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/banned"
 
 
 on load:
-    line count of url 
+    clear {SkriptPublicBans::Bans}
+    set {_c} to line count of url {@banlist}
+    send "[PublicBans] Player Bans loading..." to console
+    loop {_c} times:
+        add line loop-value from url {@banlist} to {SkriptPublicBans::Bans}
+        send "[PublicBans] Player % line loop-value from url {@banlist}% was addet to the ban list!" to console
+    send "[PublicBans] Player Bans Fully Loaded!" to console
+
+command /PublicBansReload: #Reloades The bans
+    permission: op
+    trigger:
+        clear {SkriptPublicBans::Bans}
+        set {_c} to line count of url {@banlist}
+        send "[PublicBans] Player Bans loading..." to player
+        loop {_c} times:
+            add line loop-value from url {@banlist} to {SkriptPublicBans::Bans}
+            send "[PublicBans] Player % line loop-value from url {@banlist}% was addet to the ban list!" to player
+        send "[PublicBans] Player Bans Fully Loaded!" to player
+
+
+
