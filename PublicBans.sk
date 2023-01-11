@@ -1,0 +1,8 @@
+# skript by nenderson#0001 it will kick every person on join who is on the "banned" list that can be found on the github: https://github.com/nenderson/SkriptPublicBans
+# you have to get skUtilities from https://forums.skunity.com/resources/skutilities.26/
+options:
+    banlist: ""
+
+
+on load:
+    line count of url 
