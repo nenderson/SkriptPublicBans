@@ -24,5 +24,6 @@ command /PublicBansReload: #Reloades The bans
             send "[PublicBans] Player % line loop-value from url {@banlist}% was addet to the ban list!" to player
         send "[PublicBans] Player Bans Fully Loaded!" to player
 
-
-
+on join:
+    if {SkriptPublicBans::Bans} contains player's name:
+        kick player due to "&c[PublicBan] &4You are banned from PublicBans server!"
