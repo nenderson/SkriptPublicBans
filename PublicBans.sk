@@ -2,7 +2,7 @@
 # you have to get skUtilities from https://forums.skunity.com/resources/skutilities.26/
 options:
     banlist: "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/banned"
-    version: "1.0" #DO NOT TOUCH
+    version: "1.01" #DO NOT TOUCH
 
 on load:
     if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
@@ -15,6 +15,15 @@ on load:
         add loop-value parsed as offline player to {SkriptPublicBans::Bans::*}
         send "&e[PublicBans] &aPlayer %loop-value parsed as offline player% (%loop-value%) was added to the ban list!" to console
     send "&e[PublicBans] &aPlayer Bans Fully Loaded!" to console
+
+every hour:
+    clear {SkriptPublicBans::Bans::*}
+    set {_p::*} to line 1 from url {@banlist} split at "|"
+    send "&e[PublicBans] &aAuto Reload of Player Bans loading..." to console
+    loop {_p::*}:
+        add loop-value parsed as offline player to {SkriptPublicBans::Bans::*}
+        send "&e[PublicBans] &aPlayer %loop-value parsed as offline player% (%loop-value%) was added to the ban list!" to console
+    send "&e[PublicBans] &aAuto Reload of PlayerPlayer Bans Fully Loaded!" to console
 
 command /PublicBansReload: #Reloades The bans
     permission: op
@@ -34,3 +43,6 @@ command /PublicBansReload: #Reloades The bans
 on join:
     if {SkriptPublicBans::Bans::*} contains player:
         kick player due to "&c[PublicBan] &4You are banned from PublicBans server!"
+    if player has permission "op":
+        if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
+            send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE HERE: https://github.com/nenderson/SkriptPublicBans" to player
