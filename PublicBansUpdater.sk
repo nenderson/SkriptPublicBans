@@ -1,0 +1,7 @@
+on load:
+  send "&aStarting Update..." to console
+  delete file "plugins/Skript/scripts/%{PublicBan::Name}%.sk"
+  download file from "https://github.com/nenderson/SkriptPublicBans/releases/download/skript/PublicBans.sk" to file "plugins\\Skript\\scripts\\{PublicBan::Name}.sk"
+  reload script "{PublicBan::Name}.sk"
+  delete file "plugins/Skript/scripts/update.sk"
+  send "&aUpdate Complete" to console
