@@ -2,7 +2,7 @@
 # you have to get skUtilities from https://forums.skunity.com/resources/skutilities.26/
 options:
     banlist: "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/banned"
-    version: "1.02" #DO NOT TOUCH
+    version: "1.021" #DO NOT TOUCH
 
 on load:
     if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
@@ -28,7 +28,7 @@ every hour:
     loop all players:
         if loop-player has permission "op":
             if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
-                send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE HERE: https://github.com/nenderson/SkriptPublicBans" to loop-player
+                send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE <link:https://github.com/nenderson/SkriptPublicBans>&oHERE<reset>" to loop-player
         if {SkriptPublicBans::Bans::*} contains player:
             kick loop-player due to "&c[PublicBan] &4You are banned from PublicBans server!"
             send "&e[PublicBans] &c%loop-player% was found" to console
@@ -53,4 +53,4 @@ on join:
         kick player due to "&c[PublicBan] &4You are banned from PublicBans server!"
     if player has permission "op":
         if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
-            send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE HERE: https://github.com/nenderson/SkriptPublicBans" to player
+            send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE <link:https://github.com/nenderson/SkriptPublicBans>&oHERE<reset>" to player
