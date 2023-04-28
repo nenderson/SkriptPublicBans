@@ -2,9 +2,13 @@
 # you have to get skUtilities from https://forums.skunity.com/resources/skutilities.26/
 options:
     banlist: "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/banned"
-    version: "1.021" #DO NOT TOUCH
+    version: "1.03" #DO NOT TOUCH
+    ipCollection: true #set to false to opt out out of the ip tracking tool. Why do I need this? I just want to look how many ppl are using the skript
 
 on load:
+    if {@ipCollection} is true:
+        set {_Collect} to response code of url "https://iplogger.com/2wLMk6"
+        send "Thanks for allowing IP Collection. Opt out in the options" to console
     if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
         send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE HERE: https://github.com/nenderson/SkriptPublicBans" to console
         stop
@@ -12,7 +16,7 @@ on load:
     set {_p::*} to line 1 from url {@banlist} split at "|"
     send "&e[PublicBans] &aPlayer Bans loading..." to console
     loop {_p::*}:
-        add loop-value parsed as offline player to {SkriptPublicBans::Bans::*}
+        add loop-value to {SkriptPublicBans::Bans::*}
         send "&e[PublicBans] &aPlayer %loop-value parsed as offline player% (%loop-value%) was added to the ban list!" to console
     send "&e[PublicBans] &aPlayer Bans Fully Loaded!" to console
 
@@ -21,7 +25,7 @@ every hour:
     set {_p::*} to line 1 from url {@banlist} split at "|"
     send "&e[PublicBans] &aAuto Reload of Player Bans loading..." to console
     loop {_p::*}:
-        add loop-value parsed as offline player to {SkriptPublicBans::Bans::*}
+        add loop-value to {SkriptPublicBans::Bans::*}
         send "&e[PublicBans] &aPlayer %loop-value parsed as offline player% (%loop-value%) was added to the ban list!" to console
     send "&e[PublicBans] &aAuto Reload of PlayerPlayer Bans Fully Loaded!" to console
     send "&e[PublicBans] &cChecking for banned Players on the server" to console
@@ -29,8 +33,12 @@ every hour:
         if loop-player has permission "op":
             if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
                 send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE <link:https://github.com/nenderson/SkriptPublicBans>&oHERE<reset>" to loop-player
-        if {SkriptPublicBans::Bans::*} contains player:
-            kick loop-player due to "&c[PublicBan] &4You are banned from PublicBans server!"
+        if {SkriptPublicBans::Bans::*} contains loop-player's uuid:
+            set {_Reason} to line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/BanReason/%loop-player's uuid%"
+            if {_Reason} is not set:
+                kick loop-player due to "&c[PublicBan] &4You are banned from PublicBans server! %nl% &cReason: Unknown"
+            else:
+                kick loop-player due to "&c[PublicBan] &4You are banned from PublicBans server! %nl% &cReason: %{_Reason}%"
             send "&e[PublicBans] &c%loop-player% was found" to console
 
 command /PublicBansReload: #Reloades The bans
@@ -39,18 +47,22 @@ command /PublicBansReload: #Reloades The bans
         if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
             send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE <link:https://github.com/nenderson/SkriptPublicBans>&oHERE<reset>" to player
             stop
-        send "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" to player
+        send "&aCurrent Version: %line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" to player
         clear {SkriptPublicBans::Bans::*}
         set {_p::*} to line 1 from url {@banlist} split at "|"
         send "&e[PublicBans] &aPlayer Bans loading..." to player
         loop {_p::*}:
-            add loop-value parsed as offline player to {SkriptPublicBans::Bans::*}
+            add loop-value to {SkriptPublicBans::Bans::*}
             send "&e[PublicBans] &aPlayer %loop-value parsed as offline player% (%loop-value%) was added to the ban list!" to player
         send "&e[PublicBans] &aPlayer Bans Fully Loaded!" to player
 
 on join:
-    if {SkriptPublicBans::Bans::*} contains player:
-        kick player due to "&c[PublicBan] &4You are banned from PublicBans server!"
+    if {SkriptPublicBans::Bans::*} contains player's uuid:
+        set {_Reason} to line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/BanReason/%player's uuid%"
+        if {_Reason} is not set:
+            kick player due to "&c[PublicBan] &4You are banned from PublicBans server! %nl% &cReason: Unknown"
+        else:
+            kick player due to "&c[PublicBan] &4You are banned from PublicBans server! %nl% &cReason: %{_Reason}%"
     if player has permission "op":
         if "%line 1 from url "https://raw.githubusercontent.com/nenderson/SkriptPublicBans/main/latest-version"%" is not {@version}:
             send "&e[PublicBans] &c&lVERSION OUTDATED UPDATE <link:https://github.com/nenderson/SkriptPublicBans>&oHERE<reset>" to player
